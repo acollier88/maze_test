@@ -1,3 +1,2 @@
 # maze_test
-# maze_test
-# maze_test
+`python solver.py`
