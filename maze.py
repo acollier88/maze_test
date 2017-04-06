@@ -33,7 +33,7 @@ class Maze(object):
         if coord_y > self.height or coord_y < 0:
             raise Exception('Invalid Y Coord {0} is not in the range 0 to {1}'
                             .format(coord_y,self.height))
-        index = coord_x * coord_y + coord_y
+        index = coord_y * self.width + coord_x
         return self.grid_data[index]
     
     def cell_to_dict(self, coord_x, coord_y):
@@ -43,7 +43,7 @@ class Maze(object):
         if coord_y > self.height or coord_y < 0:
             raise Exception('Invalid Y Coord {0} is not in the range 0 to {1}'
                             .format(coord_y,height))
-        index = coord_x * coord_y + coord_y
+        index = coord_y * self.width + coord_x
         cell = self.grid_data[index]        
         return {
             'UP': cell & 1,
@@ -67,13 +67,13 @@ class Maze(object):
             'MINE': cell & 64,  
         }
     
-    def translate_movement(self, movment, index):
+    def translate_movement(self, movement, index):
         result = {
             'UP': lambda x: x - self.width,
             'RIGHT': lambda x: x + 1,
             'DOWN': lambda x: x + self.width,
             'LEFT': lambda x: x - 1,
-        }[movment](index)
+        }[movement](index)
         return result
     
 class MovementNode(object):

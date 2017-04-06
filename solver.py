@@ -39,15 +39,17 @@ class Solver(object):
             node = graph[node.parent_index]
         return True
 
-    def print_instructions(self, node, graph):
+    def print_instructions(self, node, graph, unit_test):
         instructions = []
         text = node.parent_move
         while node.parent_index is not None:
-            instructions.append(text)
+            instructions.append(text.lower())
             node = graph[node.parent_index]
             text = node.parent_move
         instructions.reverse()
-        print instructions
+        if not unit_test:
+            print instructions
+        return instructions
         
     def print_debug(self, maze, visited):
         for i,cell in enumerate(maze.grid_data):
@@ -91,11 +93,12 @@ class Solver(object):
                 height, width = size_tuple
                 new_maze = Maze(width, height, grid_data)
                 self.maze_list.append(new_maze)
-                
-               
-    def solve_all_mazes(self, character, debug=False):
+                             
+    def solve_all_mazes(self, character, debug=False, unit_test=False):
+        solutions = []
         for maze in self.maze_list:
-            print 'maze {0}x{1}'.format(maze.height,maze.width)
+            if not unit_test:
+                print 'maze {0}x{1}'.format(maze.height,maze.width)
             
             visited = set()
             try_cells = Queue()
@@ -111,7 +114,9 @@ class Solver(object):
                 current = try_cells.get()
                 if current.value & maze.type_enum['END']:
                     if self.verify_survives(character, current, graph):
-                        self.print_instructions(current, graph)
+                        solutions.append(self.print_instructions(current,
+                                                                 graph,
+                                                                 unit_test))
                         break
                 options = maze.index_to_dict(current.index)           
                 survival = True
@@ -139,7 +144,7 @@ class Solver(object):
             
             if debug:
                 self.print_debug(maze,visited)    
-
+        return solutions
 
 if __name__ == '__main__':
     andrew = Character(max_lives=3)
